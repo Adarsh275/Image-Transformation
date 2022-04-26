@@ -12,6 +12,8 @@ Option:
     rotate              Rotate image by given angle
     invert-color        Invert colors of the image
     contrast            To adjust contrast of image
+    rgb-channels        To obtain image containg only r,g or b or a mixture of those
+    transparency        To add transparency to images
 
 
 src - source of image

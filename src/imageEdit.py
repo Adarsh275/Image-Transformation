@@ -1,10 +1,8 @@
-from audioop import mul
 import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from pathlib import Path
-import sys
-
+import re
 
 class imageEdit:
     def __init__(self,src,dest):
@@ -25,11 +23,9 @@ class imageEdit:
         mpimg.imsave(self.dest,self.outp)
 
 
-
     def showOutput(self):
         plt.imshow(self.outp)
         plt.show()
-
 
 
     def edgeDetection(self):
@@ -55,7 +51,7 @@ class imageEdit:
                 
         edges_img = edges_img/edges_img.max()
 
-        self.outp = edges_img.astype(np.uint8)
+        self.outp = edges_img
 
         return self.outp
 
@@ -123,9 +119,9 @@ class imageEdit:
 
 
     def rotate(self):
-        ang = int(input("Enter angle in degrees: "))
-        SIN = np.sin(ang*np.pi/180)  # obtaining sin value
-        COS = np.cos(ang*np.pi/180)  # obtaining cos value
+        self.ang = int(input("Enter angle in degrees: "))
+        SIN = np.sin(self.ang*np.pi/180)  # obtaining sin value
+        COS = np.cos(self.ang*np.pi/180)  # obtaining cos value
 
         # defining height and width of the image
         height,width= self.inp.shape[0],self.inp.shape[1]
@@ -177,6 +173,7 @@ class imageEdit:
 
     def invertColor(self):
         self.outp = self.inp.copy()
+
         self.outp = ~self.outp
 
         # for i in range(len(self.inp)):
@@ -200,8 +197,41 @@ class imageEdit:
         self.outp = pixvals.astype(np.uint8)
 
 
+    def rgbchannel(self):
+        reg = "^r?g?b?$"
+        while(True):
+            print("Input should be a combination of r g and b")
+            self.channel = input("Enter channel composition: ").lower()
+
+            if re.search(reg,self.channel):
+                
+                self.outp = np.zeros(self.inp.shape)
+
+                if 'r' in self.channel:
+                    self.outp[:,:,0] = self.inp[:,:,0]
+                if 'g' in self.channel:
+                    self.outp[:,:,1] = self.inp[:,:,1]
+                if 'b' in self.channel:
+                    self.outp[:,:,2] = self.inp[:,:,2]
+
+                self.outp = self.outp.astype(np.uint8)
+                break
+
+            else:
+                print("Invalid input composition")
+
+    def transparency(self):
+        self.outp = np.zeros((self.inp.shape[0],self.inp.shape[1],4)).astype(np.uint8)
+
+        self.percentage = float(input("Enter transparency percentage: "))
+        multiplier = int((100-self.percentage)/100 * 255)
+
+        self.outp[:,:,0:3] = self.inp[:,:,0:3]
+        self.outp[:,:,3] = multiplier
+
+
         
-      
+        
 
 
 
